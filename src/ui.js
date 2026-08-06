@@ -1,4 +1,4 @@
-import { RANK_LABELS, SUIT_LABELS, cardLabel, makeCard, rankOf, suitOf } from './cards.js';
+import { RANK_LABELS, SUIT_LABELS, makeCard, rankOf, suitOf } from './cards.js';
 import { findBestHold } from './solver.js';
 
 const RANK_NAMES = [
@@ -6,7 +6,6 @@ const RANK_NAMES = [
   'jack', 'queen', 'king', 'ace',
 ];
 const SUIT_NAMES = ['clubs', 'diamonds', 'hearts', 'spades'];
-const NUMBER_WORDS = ['zero', 'one', 'two', 'three', 'four', 'five'];
 const RED_SUITS = [1, 2];
 const GRID_SUIT_ORDER = [2, 1, 3, 0];
 
@@ -27,7 +26,7 @@ render();
 
 function buildGrid() {
   for (const suit of GRID_SUIT_ORDER) {
-    for (let rank = RANK_LABELS.length - 1; rank >= 0; rank--) {
+    for (let rank = 0; rank < RANK_LABELS.length; rank++) {
       const card = makeCard(rank, suit);
       const button = cardElement(card);
       button.addEventListener('click', () => selectCard(card));
@@ -118,22 +117,27 @@ function renderResult() {
   if (!bestHold) {
     const remaining = 5 - hand.length;
     resultElement.textContent = remaining === 5
-      ? 'Pick five cards to see the best hold'
-      : `Pick ${NUMBER_WORDS[remaining]} more ${remaining === 1 ? 'card' : 'cards'}`;
+      ? 'Select 5 cards'
+      : `Select ${remaining} more ${remaining === 1 ? 'card' : 'cards'}`;
     return;
   }
 
-  const holdLine = document.createElement('div');
-  holdLine.className = 'result-hold';
-  holdLine.textContent = bestHold.held.length === 0
-    ? 'Discard all five cards'
-    : `Hold ${bestHold.held.map(cardLabel).join(' ')}`;
+  const value = document.createElement('div');
+  value.className = 'result-ev-value';
+  value.textContent = `${bestHold.ev.toFixed(2)} EV`;
 
-  const evLine = document.createElement('div');
-  evLine.className = 'result-ev';
-  evLine.textContent = `Expected value: ${bestHold.ev.toFixed(2)} credits per credit bet`;
+  const caption = document.createElement('div');
+  caption.className = 'result-ev-caption';
+  caption.textContent = 'average credits returned per credit bet';
 
-  resultElement.replaceChildren(holdLine, evLine);
+  if (bestHold.held.length === 0) {
+    const note = document.createElement('div');
+    note.className = 'result-note';
+    note.textContent = 'Discard all 5 cards';
+    resultElement.replaceChildren(note, value, caption);
+  } else {
+    resultElement.replaceChildren(value, caption);
+  }
 }
 
 function cardElement(card) {

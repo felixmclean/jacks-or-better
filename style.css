@@ -38,17 +38,22 @@ main {
   padding-bottom: 48px;
 }
 
+:root {
+  --hand-card-width: clamp(58px, 14vw, 92px);
+  --hand-gap: 12px;
+}
+
 #hand {
   display: flex;
   justify-content: center;
-  gap: 12px;
+  gap: var(--hand-gap);
   padding-top: 12px;
   margin-bottom: 18px;
 }
 
 #hand .card,
 .card-slot {
-  width: clamp(58px, 14vw, 92px);
+  width: var(--hand-card-width);
 }
 
 .card-slot {
@@ -113,11 +118,11 @@ main {
 }
 
 #hand .card-rank {
-  font-size: clamp(1rem, 3vw, 1.5rem);
+  font-size: clamp(1.2rem, 3.4vw, 1.9rem);
 }
 
 #hand .card-suit {
-  font-size: clamp(1.3rem, 3.8vw, 2rem);
+  font-size: clamp(0.8rem, 2.1vw, 1.2rem);
 }
 
 .hand-card.held {
@@ -149,6 +154,8 @@ main {
   align-items: center;
   justify-content: center;
   gap: 2px;
+  width: calc(5 * var(--hand-card-width) + 4 * var(--hand-gap));
+  margin: 0 auto;
   min-height: 64px;
   padding: 10px 16px;
   background: #00000040;
@@ -156,14 +163,19 @@ main {
   text-align: center;
 }
 
-.result-hold {
-  font-size: 1.15rem;
-  font-weight: 600;
+.result-ev-value {
+  font-size: 1.7rem;
+  font-weight: 700;
 }
 
-.result-ev {
-  color: #f4f1e8cc;
-  font-size: 0.95rem;
+.result-ev-caption {
+  color: #f4f1e8b3;
+  font-size: 0.85rem;
+}
+
+.result-note {
+  font-size: 1.05rem;
+  font-weight: 600;
 }
 
 #reset {
@@ -207,9 +219,9 @@ main {
 }
 
 #grid .card-rank {
-  font-size: clamp(0.6rem, 1.7vw, 1rem);
+  font-size: clamp(0.85rem, 2.2vw, 1.35rem);
 }
 
 #grid .card-suit {
-  font-size: clamp(0.9rem, 2.4vw, 1.5rem);
+  font-size: clamp(0.55rem, 1.4vw, 0.85rem);
 }
