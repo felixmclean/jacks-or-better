@@ -1,4 +1,5 @@
 import { RANK_LABELS, SUIT_LABELS, makeCard, rankOf, suitOf } from './cards.js';
+import { PAY_TABLE } from './evaluator.js';
 import { findBestHold } from './solver.js';
 
 const RANK_NAMES = [
@@ -8,6 +9,7 @@ const RANK_NAMES = [
 const SUIT_NAMES = ['clubs', 'diamonds', 'hearts', 'spades'];
 const RED_SUITS = [1, 2];
 const GRID_SUIT_ORDER = [2, 1, 3, 0];
+const PAYTABLE_DISPLAY_NAMES = { 'Jacks or Better': 'One Pair (Jacks or Better)' };
 
 const handElement = document.getElementById('hand');
 const resultElement = document.getElementById('result');
@@ -21,6 +23,8 @@ let bestHold = null;
 let calculating = false;
 
 buildGrid();
+buildPayTable();
+setUpPaytableToggle();
 resetButton.addEventListener('click', reset);
 render();
 
@@ -36,18 +40,53 @@ function buildGrid() {
   }
 }
 
+function buildPayTable() {
+  const paytableElement = document.getElementById('paytable');
+
+  const heading = document.createElement('h2');
+  heading.textContent = 'Standard 9/6 Paytable';
+
+  const rtp = document.createElement('p');
+  rtp.className = 'paytable-rtp';
+  rtp.textContent = '99.54% return to player with optimal play';
+
+  const table = document.createElement('table');
+  const headRow = table.createTHead().insertRow();
+  const rankHeader = document.createElement('th');
+  rankHeader.textContent = 'Rank';
+  const payoutHeader = document.createElement('th');
+  payoutHeader.textContent = 'Payout';
+  payoutHeader.className = 'paytable-pays';
+  headRow.append(rankHeader, payoutHeader);
+
+  const body = table.createTBody();
+  for (const [handName, pays] of Object.entries(PAY_TABLE)) {
+    if (pays === 0) continue;
+    const row = body.insertRow();
+    row.insertCell().textContent = PAYTABLE_DISPLAY_NAMES[handName] ?? handName;
+    const paysCell = row.insertCell();
+    paysCell.className = 'paytable-pays';
+    paysCell.textContent = pays;
+  }
+
+  paytableElement.append(heading, rtp, table);
+}
+
+function setUpPaytableToggle() {
+  const toggle = document.getElementById('paytable-toggle');
+  const paytable = document.getElementById('paytable');
+  toggle.addEventListener('click', () => {
+    const expanded = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!expanded));
+    paytable.hidden = expanded;
+  });
+}
+
 function selectCard(card) {
   if (hand.length >= 5 || hand.includes(card)) return;
   hand.push(card);
   if (hand.length === 5) startCalculation();
   render();
-}
-
-function chipElement(label, className) {
-  const chip = document.createElement('span');
-  chip.className = className;
-  chip.textContent = label;
-  return chip;
 }
 
 function removeCard(index) {
@@ -90,32 +129,6 @@ function renderHand() {
   }
 }
 
-function handCardElement(card, index) {
-  const button = cardElement(card);
-  button.classList.add('hand-card');
-  button.setAttribute('aria-label', `remove ${cardName(card)}`);
-  button.title = 'Click to remove';
-  if (bestHold) {
-    if (bestHold.held.includes(card)) {
-      button.classList.add('held');
-      button.append(chipElement('HOLD', 'hold-chip'));
-    } else if (bestHold.held.length === 0) {
-      button.classList.add('discard-all');
-      button.append(chipElement('DISCARD', 'discard-chip'));
-    } else {
-      button.classList.add('discarded');
-    }
-  }
-  button.addEventListener('click', () => removeCard(index));
-  return button;
-}
-
-function emptySlotElement() {
-  const slot = document.createElement('div');
-  slot.className = 'card-slot';
-  return slot;
-}
-
 function renderResult() {
   if (calculating) {
     resultElement.textContent = 'Calculating…';
@@ -143,6 +156,26 @@ function renderResult() {
   resultElement.replaceChildren(value, caption);
 }
 
+function handCardElement(card, index) {
+  const button = cardElement(card);
+  button.classList.add('hand-card');
+  button.setAttribute('aria-label', `remove ${cardName(card)}`);
+  button.title = 'Click to remove';
+  if (bestHold) {
+    if (bestHold.held.includes(card)) {
+      button.classList.add('held');
+      button.append(chipElement('HOLD', 'hold-chip'));
+    } else if (bestHold.held.length === 0) {
+      button.classList.add('discard-all');
+      button.append(chipElement('DISCARD', 'discard-chip'));
+    } else {
+      button.classList.add('discarded');
+    }
+  }
+  button.addEventListener('click', () => removeCard(index));
+  return button;
+}
+
 function cardElement(card) {
   const button = document.createElement('button');
   button.type = 'button';
@@ -159,6 +192,19 @@ function cardElement(card) {
 
   button.append(rank, suit);
   return button;
+}
+
+function chipElement(label, className) {
+  const chip = document.createElement('span');
+  chip.className = className;
+  chip.textContent = label;
+  return chip;
+}
+
+function emptySlotElement() {
+  const slot = document.createElement('div');
+  slot.className = 'card-slot';
+  return slot;
 }
 
 function cardName(card) {

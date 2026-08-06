@@ -2,6 +2,11 @@
   box-sizing: border-box;
 }
 
+:root {
+  --hand-card-width: clamp(58px, 14vw, 92px);
+  --hand-gap: 12px;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -35,16 +40,10 @@ header p {
 }
 
 main {
-  padding-bottom: 48px;
-}
-
-:root {
-  --hand-card-width: clamp(58px, 14vw, 92px);
-  --hand-gap: 12px;
+  padding-bottom: 96px;
 }
 
 #hand {
-  position: relative;
   display: flex;
   justify-content: center;
   gap: var(--hand-gap);
@@ -235,4 +234,114 @@ main {
 
 #grid .card-suit {
   font-size: clamp(0.55rem, 1.4vw, 0.85rem);
+}
+
+#extras {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 26px 16px 18px;
+  background: linear-gradient(#0c352700, #0c3527 60%);
+  pointer-events: none;
+}
+
+#extras button,
+#extras a {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 16px;
+  background: transparent;
+  color: #f4f1e8b3;
+  border: 1px solid #f4f1e840;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.8rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#extras button:hover,
+#extras a:hover {
+  color: #f4f1e8;
+  border-color: #f4f1e880;
+  background: #f4f1e814;
+}
+
+#paytable-toggle[aria-expanded='true'],
+#paytable-toggle[aria-expanded='true']:hover {
+  background: #f4f1e8;
+  border-color: #f4f1e8;
+  color: #0c3527;
+}
+
+#paytable {
+  position: fixed;
+  left: 50%;
+  bottom: 82px;
+  transform: translateX(-50%);
+  z-index: 5;
+  width: min(380px, calc(100vw - 32px));
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+  padding: 14px 8px;
+  background: #0e3d2d;
+  border: 1px solid #f4f1e821;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px #00000038;
+  color: #f4f1e899;
+}
+
+#paytable h2 {
+  margin: 0 0 2px;
+  padding: 0 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+#paytable table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+#paytable th {
+  padding: 4px 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: left;
+  color: #f4f1e87a;
+  border-bottom: 1px solid #f4f1e81f;
+}
+
+#paytable th.paytable-pays {
+  text-align: right;
+}
+
+#paytable td {
+  padding: 4px 8px;
+}
+
+#paytable tr + tr td {
+  border-top: 1px solid #f4f1e812;
+}
+
+.paytable-pays {
+  text-align: right;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.paytable-rtp {
+  margin: 0 0 10px;
+  padding: 0 8px;
+  font-size: 0.78rem;
+  color: #f4f1e87a;
 }
