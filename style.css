@@ -44,6 +44,7 @@ main {
 }
 
 #hand {
+  position: relative;
   display: flex;
   justify-content: center;
   gap: var(--hand-gap);
@@ -130,22 +131,37 @@ main {
   outline-offset: 1px;
 }
 
+.hand-card.discard-all {
+  outline: 3px solid #b0b6ae;
+  outline-offset: 1px;
+}
+
 .hand-card.discarded {
   opacity: 0.45;
 }
 
-.hold-chip {
+.hold-chip,
+.discard-chip {
   position: absolute;
   top: -11px;
   left: 50%;
   transform: translateX(-50%);
   padding: 2px 8px;
-  background: #f5b301;
-  color: #231a02;
   font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   border-radius: 999px;
+  white-space: nowrap;
+}
+
+.hold-chip {
+  background: #f5b301;
+  color: #231a02;
+}
+
+.discard-chip {
+  background: #b0b6ae;
+  color: #0c3527;
 }
 
 #result {
@@ -171,11 +187,6 @@ main {
 .result-ev-caption {
   color: #f4f1e8b3;
   font-size: 0.85rem;
-}
-
-.result-note {
-  font-size: 1.05rem;
-  font-weight: 600;
 }
 
 #reset {

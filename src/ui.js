@@ -43,6 +43,13 @@ function selectCard(card) {
   render();
 }
 
+function chipElement(label, className) {
+  const chip = document.createElement('span');
+  chip.className = className;
+  chip.textContent = label;
+  return chip;
+}
+
 function removeCard(index) {
   hand.splice(index, 1);
   bestHold = null;
@@ -91,10 +98,10 @@ function handCardElement(card, index) {
   if (bestHold) {
     if (bestHold.held.includes(card)) {
       button.classList.add('held');
-      const chip = document.createElement('span');
-      chip.className = 'hold-chip';
-      chip.textContent = 'HOLD';
-      button.append(chip);
+      button.append(chipElement('HOLD', 'hold-chip'));
+    } else if (bestHold.held.length === 0) {
+      button.classList.add('discard-all');
+      button.append(chipElement('DISCARD', 'discard-chip'));
     } else {
       button.classList.add('discarded');
     }
@@ -130,14 +137,7 @@ function renderResult() {
   caption.className = 'result-ev-caption';
   caption.textContent = 'average credits returned per credit bet';
 
-  if (bestHold.held.length === 0) {
-    const note = document.createElement('div');
-    note.className = 'result-note';
-    note.textContent = 'Discard all 5 cards';
-    resultElement.replaceChildren(note, value, caption);
-  } else {
-    resultElement.replaceChildren(value, caption);
-  }
+  resultElement.replaceChildren(value, caption);
 }
 
 function cardElement(card) {
