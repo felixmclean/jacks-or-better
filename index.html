@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jacks or Better Strategy Calculator</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>♠</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Jacks or Better</h1>
+    <p>Pick a five card hand and see the hold with the highest expected value, computed by exhaustively enumerating every possible draw.</p>
+  </header>
+  <main>
+    <section id="hand" aria-label="Your hand"></section>
+    <div id="result" role="status"></div>
+    <button id="reset" type="button">Reset</button>
+    <section id="grid" aria-label="Card picker"></section>
+  </main>
+  <script type="module" src="src/ui.js"></script>
+</body>
+</html>
