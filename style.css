@@ -102,12 +102,22 @@ main {
   line-height: 1;
 }
 
+/* optical corrections: at equal font size the solid heart carries more
+   visual mass than the other suits and the narrow diamond carries less */
+.card-suit-hearts {
+  transform: scale(0.9);
+}
+
+.card-suit-diamonds {
+  transform: scale(1.06);
+}
+
 #hand .card-rank {
   font-size: clamp(1rem, 3vw, 1.5rem);
 }
 
 #hand .card-suit {
-  font-size: clamp(1.1rem, 3.4vw, 1.7rem);
+  font-size: clamp(1.3rem, 3.8vw, 2rem);
 }
 
 .hand-card.held {
@@ -159,22 +169,32 @@ main {
 #reset {
   display: block;
   margin: 16px auto 0;
-  padding: 8px 22px;
-  background: transparent;
-  color: inherit;
-  border: 1px solid #f4f1e880;
+  padding: 9px 26px;
+  background: #f4f1e8;
+  color: #0c3527;
+  border: 1px solid transparent;
   border-radius: 8px;
   font: inherit;
+  font-weight: 600;
   cursor: pointer;
+  box-shadow: 0 2px 6px #00000059;
+  transition: transform 120ms ease, box-shadow 120ms ease;
 }
 
 #reset:enabled:hover {
-  background: #f4f1e81f;
+  background: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px #00000066;
 }
 
 #reset:disabled {
-  opacity: 0.4;
+  background: transparent;
+  color: inherit;
+  border-color: #f4f1e84d;
+  font-weight: 400;
+  opacity: 0.5;
   cursor: default;
+  box-shadow: none;
 }
 
 #grid {
@@ -191,5 +211,5 @@ main {
 }
 
 #grid .card-suit {
-  font-size: clamp(0.7rem, 1.9vw, 1.1rem);
+  font-size: clamp(0.9rem, 2.4vw, 1.5rem);
 }

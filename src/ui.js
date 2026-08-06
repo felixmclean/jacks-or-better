@@ -6,8 +6,9 @@ const RANK_NAMES = [
   'jack', 'queen', 'king', 'ace',
 ];
 const SUIT_NAMES = ['clubs', 'diamonds', 'hearts', 'spades'];
+const NUMBER_WORDS = ['zero', 'one', 'two', 'three', 'four', 'five'];
 const RED_SUITS = [1, 2];
-const GRID_SUIT_ORDER = [3, 2, 1, 0];
+const GRID_SUIT_ORDER = [2, 1, 3, 0];
 
 const handElement = document.getElementById('hand');
 const resultElement = document.getElementById('result');
@@ -117,8 +118,8 @@ function renderResult() {
   if (!bestHold) {
     const remaining = 5 - hand.length;
     resultElement.textContent = remaining === 5
-      ? 'Pick five cards to see the best hold.'
-      : `Pick ${remaining} more ${remaining === 1 ? 'card' : 'cards'}.`;
+      ? 'Pick five cards to see the best hold'
+      : `Pick ${NUMBER_WORDS[remaining]} more ${remaining === 1 ? 'card' : 'cards'}`;
     return;
   }
 
@@ -130,7 +131,7 @@ function renderResult() {
 
   const evLine = document.createElement('div');
   evLine.className = 'result-ev';
-  evLine.textContent = `Expected value: ${bestHold.ev.toFixed(4)} credits per credit bet`;
+  evLine.textContent = `Expected value: ${bestHold.ev.toFixed(2)} credits per credit bet`;
 
   resultElement.replaceChildren(holdLine, evLine);
 }
@@ -146,7 +147,7 @@ function cardElement(card) {
   rank.textContent = RANK_LABELS[rankOf(card)];
 
   const suit = document.createElement('span');
-  suit.className = 'card-suit';
+  suit.className = `card-suit card-suit-${SUIT_NAMES[suitOf(card)]}`;
   suit.textContent = SUIT_LABELS[suitOf(card)];
 
   button.append(rank, suit);
