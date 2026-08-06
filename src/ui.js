@@ -129,13 +129,16 @@ function renderResult() {
     return;
   }
 
+  const net = Math.round((bestHold.ev - 1) * 100) / 100;
+
   const value = document.createElement('div');
   value.className = 'result-ev-value';
-  value.textContent = `${bestHold.ev.toFixed(2)} EV`;
+  value.textContent = `${net >= 0 ? '+' : ''}${net.toFixed(2)} EV`;
+  value.style.color = evColor(net);
 
   const caption = document.createElement('div');
   caption.className = 'result-ev-caption';
-  caption.textContent = 'average credits returned per credit bet';
+  caption.textContent = 'average profit per credit bet';
 
   resultElement.replaceChildren(value, caption);
 }
@@ -160,6 +163,13 @@ function cardElement(card) {
 
 function cardName(card) {
   return `${RANK_NAMES[rankOf(card)]} of ${SUIT_NAMES[suitOf(card)]}`;
+}
+
+// red through amber to green, saturating at 0.7 net credits either side of
+// break-even, roughly the span from the worst hand to a solidly winning hold
+function evColor(net) {
+  const t = Math.max(0, Math.min(1, (net + 0.7) / 1.4));
+  return `hsl(${120 * t}, 65%, 62%)`;
 }
 
 // let the browser paint the fifth card and the calculating notice before
