@@ -1,9 +1,9 @@
-import { cardLabel, parseHand } from '../src/cards.js';
+import { parseHand } from '../src/cards.js';
 import { findBestHold, holdExpectedValue, unseenCards } from '../src/solver.js';
 
 export function runSolverTests() {
   const results = [];
-  const check = (label, pass, detail) => results.push({ label, pass, detail });
+  const check = (code, pass) => results.push({ hand: code, pass });
 
   {
     // hand-checked EV for holding T J Q K of hearts out of Th Jh Qh Kh 2d,
@@ -11,74 +11,55 @@ export function runSolverTests() {
     // flush (50), the other 7 hearts a flush (7 * 6), the 3 off-suit aces and
     // 3 off-suit nines a straight (6 * 4), the 9 jacks/queens/kings a high
     // pair (9 * 1), and the 3 tens only a low pair (0), totalling 925
-    const hand = parseHand('Th Jh Qh Kh 2d');
+    const code = 'Th Jh Qh Kh 2d';
+    const hand = parseHand(code);
     const ev = holdExpectedValue(hand.slice(0, 4), unseenCards(hand));
-    check(
-      'EV of four to the royal matches hand-computed 925/47',
-      ev === 925 / 47,
-      `got ${ev}, expected ${925 / 47}`,
-    );
+    check(code, ev === 925 / 47);
   }
 
   {
     // the classic strategy case: break a pat flush to draw at the royal,
     // EV 919/47 ≈ 19.55 beats the flush's certain 6
-    const hand = parseHand('Th Jh Qh Kh 8h');
+    const code = 'Th Jh Qh Kh 8h';
+    const hand = parseHand(code);
     const best = findBestHold(hand);
-    check(
-      'breaks a pat flush to chase the royal',
-      sameCards(best.held, hand.slice(0, 4)) && best.ev === 919 / 47,
-      `held ${describeHold(best)}`,
-    );
+    check(code, sameCards(best.held, hand.slice(0, 4)) && best.ev === 919 / 47);
   }
 
   {
-    const hand = parseHand('2c 2d 5h 9s Kd');
+    const code = '2c 2d 5h 9s Kd';
+    const hand = parseHand(code);
     const best = findBestHold(hand);
-    check(
-      'keeps a low pair over a single high card',
-      sameCards(best.held, hand.slice(0, 2)),
-      `held ${describeHold(best)}`,
-    );
+    check(code, sameCards(best.held, hand.slice(0, 2)));
   }
 
   {
-    const hand = parseHand('3c 5d 7h 9s Jd');
+    const code = '3c 5d 7h 9s Jd';
+    const hand = parseHand(code);
     const best = findBestHold(hand);
-    check(
-      'keeps a lone jack over drawing five new cards',
-      sameCards(best.held, [hand[4]]),
-      `held ${describeHold(best)}`,
-    );
+    check(code, sameCards(best.held, [hand[4]]));
   }
 
   {
-    const hand = parseHand('Ts Js Qs Ks As');
+    const code = 'Ts Js Qs Ks As';
+    const hand = parseHand(code);
     const best = findBestHold(hand);
-    check(
-      'stands pat on a royal flush',
-      best.held.length === 5 && best.ev === 800,
-      `held ${describeHold(best)}`,
-    );
+    check(code, best.held.length === 5 && best.ev === 800);
   }
 
   {
     // discarding the kicker cannot change the payout, so both holds have
     // EV 25 exactly and the tie should go to keeping all five
-    const hand = parseHand('7c 7d 7h 7s Kd');
+    const code = '7c 7d 7h 7s Kd';
+    const hand = parseHand(code);
     const best = findBestHold(hand);
-    check(
-      'stands pat on four of a kind instead of tossing the kicker',
-      best.held.length === 5 && best.ev === 25,
-      `held ${describeHold(best)}`,
-    );
+    check(code, best.held.length === 5 && best.ev === 25);
   }
 
   {
-    const start = performance.now();
-    findBestHold(parseHand('2c 7d 9h Js Kd'));
-    const elapsed = performance.now() - start;
-    check('timing (informational)', true, `full 32-hold solve in ${elapsed.toFixed(0)} ms`);
+    const code = '2c 7d 9h Js Kd';
+    findBestHold(parseHand(code));
+    check(code, true);
   }
 
   return results;
@@ -88,9 +69,4 @@ function sameCards(actual, expected) {
   const a = [...actual].sort((x, y) => x - y);
   const b = [...expected].sort((x, y) => x - y);
   return a.length === b.length && a.every((card, i) => card === b[i]);
-}
-
-function describeHold(best) {
-  const cards = best.held.map(cardLabel).join(' ') || 'nothing';
-  return `${cards} with EV ${best.ev}`;
 }

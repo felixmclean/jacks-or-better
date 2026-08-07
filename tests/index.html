@@ -3,17 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Jacks or Better tests</title>
+  <title>Tests</title>
   <style>
-    body { font-family: monospace; margin: 2rem; background: #fff; color: #222; }
-    li { margin: 2px 0; }
-    .pass { color: #1a7a2e; }
-    .fail { color: #c0392b; font-weight: bold; }
+    .pass { color: green; }
+    .fail { color: red; }
   </style>
 </head>
 <body>
-  <h1>Jacks or Better tests</h1>
-  <p id="summary">running…</p>
+  <h1>Tests</h1>
+  <p id="summary">running...</p>
   <ul id="results"></ul>
   <script type="module">
     import { runEvaluatorTests } from './evaluator.test.js';
@@ -21,17 +19,16 @@
 
     const results = [...runEvaluatorTests(), ...runSolverTests()];
     const list = document.getElementById('results');
-    for (const { label, pass, detail } of results) {
+    for (const { hand, pass } of results) {
       const item = document.createElement('li');
       item.className = pass ? 'pass' : 'fail';
-      item.textContent = `${pass ? 'ok' : 'FAIL'} - ${label} - ${detail}`;
+      item.textContent = `${pass ? 'pass' : 'fail'} - ${hand}`;
       list.append(item);
     }
 
     const failures = results.filter((r) => !r.pass).length;
     document.getElementById('summary').textContent =
       `${results.length - failures} passed, ${failures} failed`;
-    document.title = failures === 0 ? 'tests passed' : `${failures} tests FAILED`;
   </script>
 </body>
 </html>

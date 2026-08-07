@@ -22,17 +22,11 @@ const CASES = [
 ];
 
 export function runEvaluatorTests() {
-  return CASES.map(([label, codes, expectedCategory, expectedPayout]) => {
+  return CASES.map(([, codes, expectedCategory, expectedPayout]) => {
     const hand = parseHand(codes);
     const category = classifyHand(hand);
     const pay = payout(hand);
     const pass = category === expectedCategory && pay === expectedPayout;
-    return {
-      label: `${label} (${codes})`,
-      pass,
-      detail: pass
-        ? `${category}, pays ${pay}`
-        : `got ${category} paying ${pay}, expected ${expectedCategory} paying ${expectedPayout}`,
-    };
+    return { hand: codes, pass };
   });
 }
